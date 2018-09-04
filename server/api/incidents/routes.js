@@ -3,17 +3,17 @@ const router = express.Router({mergeParams: true})
 
 let incidents = [];
 
-router.route('/incidentInfo/:id')
+router.route('/incidentInfo/:id/:quoteId')
   .get((req, res, next) => {
-    res.send(JSON.stringify(getIncidentInfo(req.params.id)))
+    res.send(JSON.stringify(getIncidentInfo(req.params.id, req.params.quoteId)))
   })
   .post((req, res, next) => {
     res.send(JSON.stringify({result : saveIncidentInfo(req.body)}))
   })
 
-  let getIncidentInfo = (id) => {
+  let getIncidentInfo = (id, quoteId) => {
     console.log('Returning Incident #', id)
-    return incidents.find( x => x.id === id )
+    return incidents.find( x => x.id === id && x.quoteId === quoteId)
   }
   
   let saveIncidentInfo = (data) => {
@@ -22,6 +22,7 @@ router.route('/incidentInfo/:id')
       incident = incidents.find( x => x.id === data.id );
     }else{
       incident = {};
+      incident.quoteId = data.quoteId
     }
     
     incident.type = data.type

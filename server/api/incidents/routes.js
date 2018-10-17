@@ -1,5 +1,6 @@
 const express = require('express')
 const router = express.Router({mergeParams: true})
+const dataStore = require('../../data/dataStore')
 
 let incidents = [];
 
@@ -8,7 +9,7 @@ router.route('/incidentInfo/:id/:quoteId')
     res.send(JSON.stringify(getIncidentInfo(req.params.id, req.params.quoteId)))
   })
   .post((req, res, next) => {
-    res.send(JSON.stringify({result : saveIncidentInfo(req.body)}))
+    res.send(JSON.stringify({result : saveIncidentInfo(req.body, req.params.quoteId)}))
   })
 
   let getIncidentInfo = (id, quoteId) => {
@@ -16,13 +17,13 @@ router.route('/incidentInfo/:id/:quoteId')
     return incidents.find( x => x.id === id && x.quoteId === quoteId)
   }
   
-  let saveIncidentInfo = (data) => {
+  let saveIncidentInfo = (data, quoteId) => {
     let incident = '';
     if(data.id !== ''){
       incident = incidents.find( x => x.id === data.id );
     }else{
       incident = {};
-      incident.quoteId = data.quoteId
+      incident.quoteId = quoteId
     }
     
     incident.type = data.type
@@ -35,6 +36,8 @@ router.route('/incidentInfo/:id/:quoteId')
       incidents.push(incident)
     }
   
+    dataStore.addIncident(incident)
+
     return incidents.length;
   }
 

@@ -35,6 +35,29 @@ const getConnectionString = () => {
     return connectionString != undefined ? connectionString : 'mongodb://lrqi_db:lrqi_db_pwd@lrqidb-shard-00-00-wksjy.mongodb.net:27017,lrqidb-shard-00-01-wksjy.mongodb.net:27017,lrqidb-shard-00-02-wksjy.mongodb.net:27017/test?ssl=true&replicaSet=LRQIDB-shard-0&authSource=admin&retryWrites=true'
 }
 
+
+const find = async (quoteId) => {
+    let client = await clientPromise
+    let db = client.db(dbName)
+    let filter = { quoteId: quoteId, type: 'incident' }
+    return new Promise((resolve, reject) => {
+        try {
+            db.collection(collection)
+                .findOne(filter, async (err, incident) => {
+                    if (err) {
+                        console.log(`Something went wrong - ${err}`)
+                        reject()
+                    }
+                    resolve(incident)
+                })
+
+        } catch (error) {
+            console.log(`Something went wrong, Error - ${error}`)
+            reject()
+        }
+    })
+}
+
 const addIncident = async (incidentInfo) => {
     let client = await clientPromise
     let db = client.db(dbName)
@@ -59,5 +82,6 @@ const addIncident = async (incidentInfo) => {
 
 module.exports = {
     createDbConnection,
-    addIncident
+    addIncident,
+    findIncident: find
 }

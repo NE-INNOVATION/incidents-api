@@ -1,41 +1,49 @@
 const express = require('express')
+var rn = require('random-number')
 const router = express.Router({mergeParams: true})
+const dataStore = require('../../data/dataStore')
 
-let incidents = [];
+var gen = rn.generator({
+  min:  100000000
+, max:  999999999
+, integer: true
+})
 
 router.route('/incidentInfo/:id/:quoteId')
-  .get((req, res, next) => {
-    res.send(JSON.stringify(getIncidentInfo(req.params.id, req.params.quoteId)))
+  .get(async (req, res, next) => {
+    res.send(JSON.stringify(await getIncidentInfo(req.params.id, req.params.quoteId)))
   })
-  .post((req, res, next) => {
-    res.send(JSON.stringify({result : saveIncidentInfo(req.body)}))
+  .post(async (req, res, next) => {
+    res.send(JSON.stringify({result : await saveIncidentInfo(req.body, req.params.quoteId)}))
   })
 
-  let getIncidentInfo = (id, quoteId) => {
+  let getIncidentInfo = async (id, quoteId) => {
     console.log('Returning Incident #', id)
-    return incidents.find( x => x.id === id && x.quoteId === quoteId)
+    let incident = await dataStore.findIncident(quoteId)
+    return incident
   }
   
-  let saveIncidentInfo = (data) => {
+  let saveIncidentInfo = async (data, quoteId) => {
     let incident = '';
     if(data.id !== ''){
-      incident = incidents.find( x => x.id === data.id );
+      incident = await dataStore.findIncident(quoteId)
     }else{
       incident = {};
-      incident.quoteId = data.quoteId
+      incident.quoteId = quoteId
     }
     
-    incident.type = data.type
+    incident.category = data.category
     incident.driver = data.driver
     incident.responsible = data.responsible
     incident.when = data.when
     
     if(data.id === '') {
-      incident.id = incidents.length + 1
-      incidents.push(incident)
+      incident.id = gen().toString()
     }
   
-    return incidents.length;
+    dataStore.addIncident(incident)
+
+    return incident.id;
   }
 
 module.exports = router;

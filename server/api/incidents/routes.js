@@ -76,6 +76,7 @@ let saveIncidentInfo = async (data, quoteId) => {
         },
       }
     );
+    return incident.id;
   } catch (error) {
     logger.error(
       `app.api.incidents - error creating new incident - ${JSON.stringify(
@@ -83,8 +84,6 @@ let saveIncidentInfo = async (data, quoteId) => {
       )}`
     );
   }
-
-  return incident.id;
 };
 
 module.exports = router;

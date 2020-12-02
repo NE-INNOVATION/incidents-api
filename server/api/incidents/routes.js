@@ -22,13 +22,15 @@ const client = axios.create({
 });
 
 router
-  .route("/incidentInfo/:id/:quoteId")
+  .route("/incidentInfo/:quoteId/:incidentId?")
   .get(async (req, res) => {
     logger.info(
-      `app.api.incidents - getting incident with id - ${req.params.id}`
+      `app.api.incidents - getting incident with id - ${req.params.incidentId}`
     );
     res.send(
-      JSON.stringify(await getIncidentInfo(req.params.id, req.params.quoteId))
+      JSON.stringify(
+        await getIncidentInfo(req.params.incidentId, req.params.quoteId)
+      )
     );
   })
   .post(async (req, res) => {
@@ -40,13 +42,13 @@ router
     );
   });
 
-let getIncidentInfo = async (id, quoteId) => {
+let getIncidentInfo = async (incidentId, quoteId) => {
   try {
-    let incident = await dataStore.findIncident(quoteId);
+    let incident = await dataStore.findIncident(incidentId, quoteId);
     return incident;
   } catch (error) {
     logger.error(
-      `app.api.incidents - getting incident#${id}, from quote#${quoteId} failed - ${JSON.stringify(
+      `app.api.incidents - getting incident#${incidentId}, from quote#${quoteId} failed - ${JSON.stringify(
         error
       )}`
     );
@@ -55,27 +57,19 @@ let getIncidentInfo = async (id, quoteId) => {
 
 let saveIncidentInfo = async (data, quoteId) => {
   try {
-    let incident = "";
-    incident = {};
+    let incident = {};
+    if (data.id) {
+      incident = await dataStore.findIncident(data.id, quoteId);
+    } else {
+      incident.id = gen().toString();
+    }
     incident.quoteId = quoteId;
     incident.category = data.category;
     incident.driver = data.driver;
     incident.responsible = data.responsible;
     incident.when = data.when;
 
-    if (!data.id) {
-      incident.id = gen().toString();
-    }
-
-    await client.post(
-      `${process.env.DB_SERVICE_URL}/${process.env.COLLECTION_NAME}`,
-      incident,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    dataStore.addIncident(incident);
     return incident.id;
   } catch (error) {
     logger.error(

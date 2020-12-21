@@ -2,8 +2,6 @@ const express = require("express");
 var rn = require("random-number");
 const router = express.Router({ mergeParams: true });
 const dataStore = require("../../data/dataStore");
-const axios = require("axios");
-const { Agent } = require("https");
 const winston = require("winston");
 const logger = winston.createLogger({
   transports: [new winston.transports.Console()],
@@ -13,12 +11,6 @@ var gen = rn.generator({
   min: 100000000,
   max: 999999999,
   integer: true,
-});
-
-const client = axios.create({
-  httpsAgent: new Agent({
-    rejectUnauthorized: false,
-  }),
 });
 
 router

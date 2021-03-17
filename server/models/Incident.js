@@ -24,4 +24,7 @@ const IncidentSchema = new Schema({
   },
 });
 
-module.exports = Incident = mongoose.model("incidents", IncidentSchema);
+module.exports = Incident = mongoose.model(
+  "col_lrqi_incidents",
+  IncidentSchema
+);

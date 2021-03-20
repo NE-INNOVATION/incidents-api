@@ -19,7 +19,7 @@ const IncidentSchema = new Schema({
     required: true,
   },
   when: {
-    type: Date,
+    type: String,
     required: true,
   },
 });

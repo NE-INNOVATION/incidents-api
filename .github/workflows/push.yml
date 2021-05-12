@@ -54,7 +54,7 @@ jobs:
           cmd: |
             'version'
             'project development'
-            'tag --source=docker quay.io/neinnovationorg/incidents-api:${{ steps.extract_branch.outputs.branch }} stage/incidents-api:${{ steps.extract_branch.outputs.branch }}'
+            'tag --source=docker quay.io/neinnovationorg/incidents-api:${{ steps.extract_branch.outputs.branch }} development/incidents-api:${{ steps.extract_branch.outputs.branch }}'
       - name: OpenShift Action - Azure
         uses: redhat-developer/openshift-actions@v2.0
         with:

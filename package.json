@@ -1,25 +1,16 @@
 {
-  "name": "incidents-api",
+  "name": "incident-info-api",
   "version": "1.0.0",
-  "description": "Drivers API to Get Put Drivers Data",
+  "description": "Incidents API to Get Put Incidents Data",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node bin/server.js",
-    "dev": "nodemon bin/server.js"
+    "start": "serverless offline",
+    "test": "jest"
   },
   "dependencies": {
-    "@cloudnative/health-connect": "^2.1.0",
-    "body-parser": "^1.19.0",
-    "config": "^3.3.6",
-    "dotenv": "^8.2.0",
-    "express": "^4.17.1",
-    "express-validator": "^6.10.0",
-    "https": "^1.0.0",
-    "mongodb": "^3.5.6",
-    "mongoose": "^5.11.19",
-    "random-number": "0.0.9",
-    "winston": "^3.3.3"
+    "env-var": "^7.3.0",
+    "mongoose": "^7.0.0"
   },
   "repository": {
     "type": "git",
@@ -32,10 +23,7 @@
   "author": "Pratik",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^1.19.4"
-  },
-  "engines": {
-    "node": "10.X.X",
-    "npm": "6.X.X"
+    "jest": "^29.4.3",
+    "serverless-offline": "^12.0.4"
   }
 }

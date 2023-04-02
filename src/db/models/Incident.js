@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const IncidentSchema = new Schema({
@@ -24,7 +24,4 @@ const IncidentSchema = new Schema({
   },
 });
 
-module.exports = Incident = mongoose.model(
-  "col_lrqi_incidents",
-  IncidentSchema
-);
+export default mongoose.model("incidents", IncidentSchema);
